@@ -110,6 +110,9 @@ function focusTrap(element, userOptions) {
     var node;
 
     if (!config.initialFocus) {
+      // a child element is focused already (for example through autofocus)
+      if (container.contains(document.activeElement)) return;
+
       node = tabbableNodes[0];
       if (!node) {
         throw new Error('You can\'t have a focus-trap without at least one focusable element');
