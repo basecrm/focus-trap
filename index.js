@@ -43,6 +43,7 @@ function focusTrap(element, userOptions) {
     }
 
     addListeners();
+    tryFocus(firstFocusNode());
     return trap;
   }
 
@@ -82,7 +83,6 @@ function focusTrap(element, userOptions) {
     listeningFocusTrap = trap;
 
     updateTabbableNodes();
-    tryFocus(firstFocusNode());
     document.addEventListener('focus', checkFocus, true);
     document.addEventListener('click', checkClick, true);
     document.addEventListener('mousedown', checkPointerDown, true);
