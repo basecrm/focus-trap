@@ -113,11 +113,7 @@ function focusTrap(element, userOptions) {
       // a child element is focused already (for example through autofocus)
       if (container.contains(document.activeElement)) return;
 
-      node = tabbableNodes[0];
-      if (!node) {
-        throw new Error('You can\'t have a focus-trap without at least one focusable element');
-      }
-      return node;
+      return tabbableNodes[0];
     }
 
     node = (typeof config.initialFocus === 'string')
