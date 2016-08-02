@@ -6,10 +6,7 @@ function focusTrap(element, userOptions) {
   var tabbableNodes = [];
   var nodeFocusedBeforeActivation = null;
   var active = false;
-
-  var container = (typeof element === 'string')
-    ? document.querySelector(element)
-    : element;
+  var containers = []
 
   var config = userOptions || {};
   config.returnFocusOnDeactivate = (userOptions && userOptions.returnFocusOnDeactivate != undefined)
@@ -82,6 +79,7 @@ function focusTrap(element, userOptions) {
     }
     listeningFocusTrap = trap;
 
+    updateContainers();
     updateTabbableNodes();
     document.addEventListener('focus', checkFocus, true);
     document.addEventListener('click', checkClick, true);
@@ -106,12 +104,18 @@ function focusTrap(element, userOptions) {
     return trap;
   }
 
+  function isChildNode(node) {
+    return containers.some(function(container) {
+      return container.contains(node)
+    })
+  }
+
   function firstFocusNode() {
     var node;
 
     if (!config.initialFocus) {
       // a child element is focused already (for example through autofocus)
-      if (container.contains(document.activeElement)) return;
+      if (isChildNode(document.activeElement)) return;
 
       return tabbableNodes[0];
     }
@@ -136,13 +140,15 @@ function focusTrap(element, userOptions) {
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (container.contains(e.target)) return;
+    updateContainers();
+    if (isChildNode(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    if (container.contains(e.target)) return;
+    updateContainers();
+    if (isChildNode(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     e.target.blur();
@@ -160,6 +166,7 @@ function focusTrap(element, userOptions) {
 
   function handleTab(e) {
     e.preventDefault();
+    updateContainers();
     updateTabbableNodes();
     var currentFocusIndex = tabbableNodes.indexOf(e.target);
     var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
@@ -177,8 +184,22 @@ function focusTrap(element, userOptions) {
     tryFocus(tabbableNodes[currentFocusIndex + 1]);
   }
 
+  function updateContainers() {
+    if (typeof element === 'string') {
+      containers = document.querySelectorAll(element)
+      containers = Array.prototype.slice.call(containers)
+    } else if (typeof element === 'function') {
+      containers = element()
+    } else if (!Array.isArray(element)) {
+      containers = [element]
+    } else {
+      containers = element
+    }
+  }
+
   function updateTabbableNodes() {
-    tabbableNodes = tabbable(container);
+    var containersTabbables = containers.map(tabbable)
+    tabbableNodes = Array.prototype.concat.apply([], containersTabbables);
   }
 }
 
