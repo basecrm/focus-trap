@@ -145,6 +145,7 @@ function focusTrap(element, userOptions) {
     if (config.clickOutsideDeactivates) return;
     updateContainers();
     if (isChildNode(e.target)) return;
+    if (config.onOutsideClick) config.onOutsideClick(e)
     if (!config.preventOutsideClicks) return;
     e.preventDefault();
     e.stopImmediatePropagation();
