@@ -15,6 +15,9 @@ function focusTrap(element, userOptions) {
   config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates != undefined)
     ? userOptions.escapeDeactivates
     : true;
+  config.preventOutsideClicks = (userOptions && userOptions.preventOutsideClicks != undefined)
+    ? userOptions.preventOutsideClicks
+    : true;
 
   var trap = {
     activate: activate,
@@ -142,6 +145,7 @@ function focusTrap(element, userOptions) {
     if (config.clickOutsideDeactivates) return;
     updateContainers();
     if (isChildNode(e.target)) return;
+    if (!config.preventOutsideClicks) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
