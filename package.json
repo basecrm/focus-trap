@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "github:basecrm/tabbable#basecrm/master"
+    "tabbable": "github:basecrm/tabbable#96fe4a2c8e869c431d0f387ba4504435ed3cae12"
   },
   "devDependencies": {
     "browserify": "13.0.0",
